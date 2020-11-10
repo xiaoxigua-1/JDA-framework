@@ -1,14 +1,14 @@
 package cmds
 
 import core.Commands
-import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
 
-class E(jda: JDA): Commands(){
+class E: Commands(){
     override fun commands(){
-        super.command(fun(event: MessageReceivedEvent){
+        command(fun(_: MessageReceivedEvent){
 
         },"fucc",listOf())
     }
+
 }

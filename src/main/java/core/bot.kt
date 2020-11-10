@@ -1,17 +1,22 @@
 package core
 
-class Bot{
-    var commandslist:MutableMap<String,fugit>
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
-    constructor() {
-        this.commandslist = mutableMapOf()
+class Bot{
+    var commandslist:MutableMap<String,fugit> = mutableMapOf()
+    var listeners:MutableList<Commands> = mutableListOf()
+    private var commanderror:MutableList<errorfn> =mutableListOf()
+    fun add(x:Commands){
+        listeners.add(x)
+        x.run().forEach{commandslist[it.key]=it.value}
+        commanderror.add(x.runCommandError())
     }
-    fun add(x:MutableMap<String,fugit>){
-        x.forEach{commandslist[it.key]=it.value}
+    fun onCommandError(event: MessageReceivedEvent,error:Error){
+        commanderror.forEach{it(event,error)}
     }
 }
 val bot=Bot()
 
-fun addcog(x:MutableMap<String,fugit>){
+fun addcog(x:Commands){
     bot.add(x)
 }

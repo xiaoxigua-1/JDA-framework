@@ -1,12 +1,13 @@
 package core
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.hooks.ListenerAdapter
 
-typealias  fugit =  (event:MessageReceivedEvent) -> Unit
-typealias errorfn=(event:MessageReceivedEvent,error:Error)->Unit
+internal typealias  fugit =  (event:MessageReceivedEvent) -> Unit
+internal typealias errorfn=(event:MessageReceivedEvent,error:Error)->Unit
+internal typealias onready=()->Unit
 
-
-open class Commands {
+open class Commands: ListenerAdapter() {
     private var commandslist: MutableMap<String,fugit> = mutableMapOf()
     var commandlist:MutableList<Command> = mutableListOf()
     var grouplist:MutableList<Group> = mutableListOf()
@@ -24,16 +25,24 @@ open class Commands {
         }
         return commandslist
     }
-    fun command(function:fugit, name: String,aliases: List<String>):Command{
+    fun runCommandError(): errorfn {
+        return fun(event:MessageReceivedEvent,error:Error){
+            onCommandError(event,error)
+        }
+    }
+    protected fun command(function:fugit, name: String,aliases: List<String>):Command{
         val command=Command(function,name,aliases)
         commandlist.add(command)
         return command
     }
-    fun group(function:fugit, name:String,aliases: List<String>): Group {
+    protected fun group(function:fugit, name:String,aliases: List<String>): Group {
         val group=Group(function,name,aliases)
         grouplist.add(group)
         return group
     }
-    open fun commands(){
+    protected open fun commands(){
+    }
+
+    protected open fun onCommandError(event:MessageReceivedEvent,error:Error){
     }
 }

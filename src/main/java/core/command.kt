@@ -2,17 +2,11 @@ package core
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
-class Command{
+class Command(private var function: fugit, private var name: String, private var aliases: List<String>) {
     private var errorfunction: (MessageReceivedEvent, Error) -> Unit
-    private var aliases: List<String>
-    private var name: String
-    private var function: (event: MessageReceivedEvent) -> Unit
     private  var command:MutableMap<String,fugit>
 
-    constructor(function: fugit, name:String, aliases: List<String>){
-        this.function=function
-        this.name=name
-        this.aliases=aliases
+    init {
         this.errorfunction=fun(_: MessageReceivedEvent, error: Error){
             println(error)
         }
@@ -22,7 +16,7 @@ class Command{
         this.errorfunction=errorfunction
     }
     fun run():MutableMap<String,fugit>{
-        var w=fun(event: MessageReceivedEvent){
+        val w=fun(event: MessageReceivedEvent){
             try{
                 function(event)
             }catch (error:Error){
